@@ -52,6 +52,14 @@ public class CustomiseExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
     }
 
+
+    @ExceptionHandler(RuntimeException.class)
+    public final ResponseEntity<Object> handleRunTimeException(CommentNotFoundException ex, WebRequest request) {
+        ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(), new Date(), new ArrayList<>(Collections.singleton(request.getDescription(false))));
+
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
@@ -65,4 +73,6 @@ public class CustomiseExceptionHandler extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(new ExceptionResponse("Validation failed", new Date(), details), HttpStatus.BAD_REQUEST);
     }
+
+
 }

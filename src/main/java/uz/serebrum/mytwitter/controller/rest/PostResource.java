@@ -3,6 +3,7 @@ package uz.serebrum.mytwitter.controller.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -12,9 +13,7 @@ import uz.serebrum.mytwitter.exception.PostNotFoundException;
 import uz.serebrum.mytwitter.exception.UserNotFoundException;
 import uz.serebrum.mytwitter.request.converter.PostConverter;
 import uz.serebrum.mytwitter.request.model.PostRequestModel;
-import uz.serebrum.mytwitter.service.LinkService;
-import uz.serebrum.mytwitter.service.PostService;
-import uz.serebrum.mytwitter.service.PrincipalService;
+import uz.serebrum.mytwitter.service.*;
 
 import java.net.URI;
 import java.security.Principal;
@@ -32,10 +31,62 @@ public class PostResource {
     @Autowired
     private PrincipalService principalService;
 
-    @GetMapping(path = "/post")
-    public List<Post> getAllPosts() {
-        return postService.getAllPosts();
+
+    @Autowired
+    private DeleteService deleteService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private  UpdateService updateService;
+
+    @Autowired
+    private SearchingService searchingService;
+
+    @GetMapping(path = "/post/search/{searchingWord}")
+    public Resource<String> getAllSearchResultsWithLinks(@PathVariable String searchingWord){
+        Resource<String> resource = new Resource<>("All matched post links");
+        searchingService.getAllMatchedPosts(searchingWord).stream().forEach(aLong -> {
+            resource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(PostResource.class).getPostById(aLong.toString())).withRel("all matched posts link"));
+        });
+        return resource;
     }
+
+
+    @GetMapping("/posts")
+    public Resource<String> getAllUserPostsURLOfAuthenticatedUser(Principal principal){
+
+        User user = userService.loadByUserName(principal.getName());
+        Resource<String> resource = new Resource<>("All user posts link");
+        List<ControllerLinkBuilder> allPostLinkByPostedUserId = linkService.getAllPostLinkByPostedUserId(user.getUserId());
+        allPostLinkByPostedUserId.stream().forEach(controllerLinkBuilder -> {
+            resource.add(controllerLinkBuilder.withRel("user-posts"));
+        });
+
+        return resource;
+    }
+
+    @PutMapping("/post/{postId}")
+    public ResponseEntity<Post> updatePost(Principal principal, @PathVariable String postId, @RequestBody PostRequestModel postRequestModel){
+        User user = userService.getByUserName(principal.getName());
+        Post updatePost = updateService.updatePost(user.getUserId(), Long.parseLong(postId), postRequestModel);
+        if (updatePost == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(updatePost,HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<Object> deletePost(Principal principal, @PathVariable String postId) {
+
+        User user = userService.getByUserName(principal.getName());
+
+        if (deleteService.deletePost(user.getUserId(), Long.parseLong(postId)))
+            return new ResponseEntity<Object>(HttpStatus.OK);
+        return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+    }
+
 
     @PostMapping(path = "/post")
     public ResponseEntity<Object> createPost(@RequestBody PostRequestModel postRequestModel, Principal principal) {
@@ -91,5 +142,44 @@ public class PostResource {
         }
 
         return postList.stream().count();
+    }
+
+    @GetMapping(path = "/user/post/{postId}/comments")
+    public Resource<String> getAllCommentsLinkOfPost(@PathVariable String postId){
+        Resource<String> resource = new Resource<>("All comments link of post");
+
+        Post post = postService.getPostById(Long.parseLong(postId));
+        if (post == null){
+            throw new PostNotFoundException(postId +" postId not found ");
+        }
+        linkService.getAllCommentLinkByPostId(post.getPostId()).stream().forEach(controllerLinkBuilder -> {
+            resource.add(controllerLinkBuilder.withRel("all-comments-of-post"));
+        });
+
+
+        ControllerLinkBuilder self = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getPostById(postId));
+        resource.add(self.withSelfRel());
+
+
+        return resource;
+    }
+
+    @GetMapping(path = "/user/post/{postId}/viewedUsers")
+    public Resource<String> getAllViewedUsersLinkOfPost(@PathVariable String postId){
+        Resource<String> resource = new Resource<>("All viewed users link of post");
+
+        Post post = postService.getPostById(Long.parseLong(postId));
+        if (post == null){
+            throw new PostNotFoundException(postId +" postId not found ");
+        }
+        linkService.getAllUsersLinkByViewedPostId(post.getPostId()).stream().forEach(controllerLinkBuilder -> {
+            resource.add(controllerLinkBuilder.withRel("all-viewed-users-of-post"));
+        });
+
+        ControllerLinkBuilder self = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass()).getPostById(postId));
+        resource.add(self.withSelfRel());
+
+
+        return resource;
     }
 }

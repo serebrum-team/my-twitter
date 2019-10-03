@@ -17,6 +17,7 @@ public class Post {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
+    @Column(columnDefinition = "TEXT")
     private String postTitle;
     @Embedded
     private OtherPostDetails otherPostDetails;

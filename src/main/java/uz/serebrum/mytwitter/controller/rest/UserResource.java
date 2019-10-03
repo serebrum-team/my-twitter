@@ -13,13 +13,14 @@ import uz.serebrum.mytwitter.entity.User;
 import uz.serebrum.mytwitter.exception.UserNotFoundException;
 import uz.serebrum.mytwitter.request.converter.UserConverter;
 import uz.serebrum.mytwitter.request.model.UserRequestModel;
-import uz.serebrum.mytwitter.service.LinkService;
-import uz.serebrum.mytwitter.service.UserService;
+import uz.serebrum.mytwitter.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/api/v1")
@@ -32,10 +33,63 @@ public class UserResource {
     @Autowired
     private LinkService linkService;
 
-    @GetMapping(path = "/user")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+
+    @Autowired
+    private DeleteService deleteService;
+
+    @Autowired
+    private UpdateService updateService;
+
+    @Autowired
+    private HomeService homeService;
+
+
+    @PutMapping("/account")
+    public User updateUser(Principal principal, @RequestBody UserRequestModel userRequestModel){
+
+        User  user = userService.getByUserName(principal.getName());
+
+        User updateUserAccount = updateService.updateUserAccount(user.getUserId(), userRequestModel);
+        return updateUserAccount;
     }
+
+
+    @Autowired
+    private SearchingService searchingService;
+
+    @GetMapping("/search/account/{word}")
+    public boolean alreadyHasThisUserName(@PathVariable String word){
+        return searchingService.alreadyHasThisUserName(word);
+    }
+
+
+
+    @GetMapping("/user/home")
+    public Resource<User> getHomeDataOfAuthenticatedUser(Principal principal){
+        User user = homeService.loadUserByUserName(principal.getName());
+
+
+        List<ControllerLinkBuilder> unReadLists = homeService.unReadPosts(user.getUserId()).stream().map(aLong -> {
+            return ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(PostResource.class).getPostById(aLong.toString()));
+        }).collect(Collectors.toList());
+
+        List<ControllerLinkBuilder> mostViewedPosts = homeService.mostReadPostAtLastDay(user.getUserId()).stream().map(aLong -> {
+            return ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(PostResource.class).getPostById(aLong.toString()));
+        }).collect(Collectors.toList());
+
+        Resource<User> userResource = new Resource<>(user);
+
+        unReadLists.stream().forEach(controllerLinkBuilder -> {
+            userResource.add(controllerLinkBuilder.withRel("all-unread-posts-from-followed-users"));
+        });
+
+        mostViewedPosts.stream().forEach(controllerLinkBuilder -> {
+            userResource.add(controllerLinkBuilder.withRel("all-unread-and-most-popular-posts"));
+        });
+
+        return userResource;
+    }
+
 
     @GetMapping(path = "/user/{id}")
     public Resource<User> getUserById(@PathVariable String id) {
@@ -69,6 +123,18 @@ public class UserResource {
 
 
         return userResource;
+    }
+
+
+    @DeleteMapping("/account")
+    public ResponseEntity<Object> deleteAccount(Principal principal) {
+        User user = userService.getByUserName(principal.getName());
+
+        boolean deleteUserAccount = deleteService.deleteUserAccount(user.getUserId());
+        if (deleteUserAccount)
+            return new ResponseEntity<Object>(HttpStatus.OK);
+
+        return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
     }
 
 

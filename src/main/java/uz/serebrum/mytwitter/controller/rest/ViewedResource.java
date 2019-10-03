@@ -34,11 +34,6 @@ public class ViewedResource {
     @Autowired
     private PostService postService;
 
-    @GetMapping(path = "/viewed")
-    public List<Viewed> getAllViewed() {
-        return viewedService.getAllViewed();
-    }
-
     @GetMapping(path = "/viewed/post/{postId}")
     public Long getAllViewedUsersCountByPostId(@PathVariable String postId) {
         List<Long> usersByPostId =

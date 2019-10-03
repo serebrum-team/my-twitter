@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
@@ -24,6 +25,7 @@ public class OtherUserDetails {
     private String firstName;
     private String lastName;
 
+    @Column(columnDefinition = "TEXT")
     private String bio;
 
 

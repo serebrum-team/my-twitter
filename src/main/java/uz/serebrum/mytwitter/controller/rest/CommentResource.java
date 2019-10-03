@@ -3,6 +3,7 @@ package uz.serebrum.mytwitter.controller.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,8 +14,7 @@ import uz.serebrum.mytwitter.exception.PostNotFoundException;
 import uz.serebrum.mytwitter.exception.UserNotFoundException;
 import uz.serebrum.mytwitter.request.converter.CommentConverter;
 import uz.serebrum.mytwitter.request.model.CommentRequestModel;
-import uz.serebrum.mytwitter.service.CommentService;
-import uz.serebrum.mytwitter.service.PrincipalService;
+import uz.serebrum.mytwitter.service.*;
 
 import java.net.URI;
 import java.security.Principal;
@@ -24,18 +24,53 @@ import java.util.List;
 @RequestMapping(path = "/api/v1/user")
 public class CommentResource {
 
-    @Autowired
-    private PrincipalService principalService;
+    private final PrincipalService principalService;
 
-    @Autowired
-    private CommentService commentService;
-    @Autowired
-    private CommentConverter commentConverter;
+    private final CommentService commentService;
+    private final CommentConverter commentConverter;
 
-    @GetMapping(path = "/comment")
-    public List<Comment> getAllComment() {
-        return commentService.getAllComments();
+
+    private final DeleteService deleteService;
+
+    private final UserService userService;
+
+    private final UpdateService updateService;
+
+    public CommentResource(PrincipalService principalService, CommentService commentService, CommentConverter commentConverter, DeleteService deleteService, UserService userService, UpdateService updateService) {
+        this.principalService = principalService;
+        this.commentService = commentService;
+        this.commentConverter = commentConverter;
+        this.deleteService = deleteService;
+        this.userService = userService;
+        this.updateService = updateService;
     }
+
+    @PutMapping("/comment/{commentId}")
+    public ResponseEntity<Comment> updateComment(Principal principal,
+                                                 @RequestBody CommentRequestModel commentRequestModel,
+                                                 @PathVariable String commentId){
+        User user = userService.getByUserName(principal.getName());
+
+        System.out.println("UpdateController.updateComment");
+        Comment updateComment = updateService.updateComment(user.getUserId(), Long.parseLong(commentId), commentRequestModel);
+
+        if (updateComment == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(updateComment,HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/comment/{commentId}")
+    public ResponseEntity<Object> deleteComment(Principal principal, @PathVariable String commentId) {
+
+        User user = userService.getByUserName(principal.getName());
+
+        if (deleteService.deleteComment(user.getUserId(), Long.parseLong(commentId)))
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+
+    }
+
 
 
     @GetMapping(path = "/comment/{id}")

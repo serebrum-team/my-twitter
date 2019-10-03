@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.serebrum.mytwitter.dao.PostDao;
 import uz.serebrum.mytwitter.dao.UserDao;
+import uz.serebrum.mytwitter.dao.solr.repository.PostRepository;
 import uz.serebrum.mytwitter.entity.Post;
 import uz.serebrum.mytwitter.entity.User;
 import uz.serebrum.mytwitter.entity.embeddable.OtherPostDetails;
@@ -17,6 +18,9 @@ public class PostService {
     private PostDao postDao;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private UserDao userDao;
     public List<Post> getAllPosts(){
         List<Post> posts = new ArrayList<>();
@@ -25,10 +29,17 @@ public class PostService {
     }
 
     public Post savePost(Post post){
+
+
         post.setPostAuthor(userDao.findById(post.getPostAuthor().getUserId()).get());
         post.setPostComments(new ArrayList<>());
         post.setPostVieweds(new ArrayList<>());
-        return postDao.save(post);
+        Post save = postDao.save(post);
+        uz.serebrum.mytwitter.entity.solr.entity.Post solrDoc =
+                new uz.serebrum.mytwitter.entity.solr.entity.Post(save.getPostId(),save.getPostTitle(),save.getOtherPostDetails().getPostBody());
+        postRepository.save(solrDoc);
+
+        return save;
     }
 
     public Post getPostById(Long id){

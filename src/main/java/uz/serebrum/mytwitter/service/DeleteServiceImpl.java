@@ -1,12 +1,11 @@
 package uz.serebrum.mytwitter.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.serebrum.mytwitter.dao.CommentDao;
 import uz.serebrum.mytwitter.dao.FollowerDao;
 import uz.serebrum.mytwitter.dao.PostDao;
 import uz.serebrum.mytwitter.dao.UserDao;
-import uz.serebrum.mytwitter.entity.Follower;
+import uz.serebrum.mytwitter.dao.solr.repository.PostRepository;
 
 import javax.transaction.Transactional;
 
@@ -17,12 +16,14 @@ public class DeleteServiceImpl implements DeleteService {
     private final PostDao postDao;
     private final CommentDao commentDao;
     private final FollowerDao followerDao;
+    private final PostRepository postRepository;
 
-    public DeleteServiceImpl(UserDao userDao, PostDao postDao, CommentDao commentDao, FollowerDao followerDao) {
+    public DeleteServiceImpl(UserDao userDao, PostDao postDao, CommentDao commentDao, FollowerDao followerDao, PostRepository postRepository) {
         this.userDao = userDao;
         this.postDao = postDao;
         this.commentDao = commentDao;
         this.followerDao = followerDao;
+        this.postRepository = postRepository;
     }
 
 
@@ -51,6 +52,7 @@ public class DeleteServiceImpl implements DeleteService {
             return true;
 
         postDao.deleteById(postId);
+        postRepository.deleteById(postId);
 
         if (!postDao.existsById(postId))
             return true;

@@ -5,6 +5,7 @@ import uz.serebrum.mytwitter.dao.CommentDao;
 import uz.serebrum.mytwitter.dao.FollowerDao;
 import uz.serebrum.mytwitter.dao.PostDao;
 import uz.serebrum.mytwitter.dao.UserDao;
+import uz.serebrum.mytwitter.dao.solr.repository.PostRepository;
 import uz.serebrum.mytwitter.entity.Comment;
 import uz.serebrum.mytwitter.entity.Post;
 import uz.serebrum.mytwitter.entity.User;
@@ -20,13 +21,15 @@ public class UpdateServiceImpl implements UpdateService {
     private final CommentDao commentDao;
     private final FollowerDao followerDao;
     private final DeleteService deleteService;
+    private final PostRepository postRepository;
 
-    public UpdateServiceImpl(UserDao userDao, PostDao postDao, CommentDao commentDao, FollowerDao followerDao, DeleteService deleteService) {
+    public UpdateServiceImpl(UserDao userDao, PostDao postDao, CommentDao commentDao, FollowerDao followerDao, DeleteService deleteService, PostRepository postRepository) {
         this.userDao = userDao;
         this.postDao = postDao;
         this.commentDao = commentDao;
         this.followerDao = followerDao;
         this.deleteService = deleteService;
+        this.postRepository = postRepository;
     }
 
     @Override
@@ -52,7 +55,10 @@ public class UpdateServiceImpl implements UpdateService {
         post.setPostTitle(postRequestModel.getPostTitle());
         post.setOtherPostDetails(postRequestModel.getOtherPostDetails());
 
-        return postDao.save(post);
+        Post save = postDao.save(post);
+        uz.serebrum.mytwitter.entity.solr.entity.Post solrDoc = new
+                uz.serebrum.mytwitter.entity.solr.entity.Post(save.getPostId(),save.getPostTitle(),save.getOtherPostDetails().getPostBody());
+        return save;
     }
 
     @Override
