@@ -2,6 +2,7 @@ package uz.serebrum.mytwitter.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.sun.org.apache.bcel.internal.generic.LSTORE;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
@@ -47,8 +48,15 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
     private List<Follower> userFollowers;
 
-    @OneToMany(mappedBy = "viewedUser")
+    @OneToMany(mappedBy = "viewedUser",cascade = CascadeType.REMOVE)
     private List<Viewed> userVieweds;
+
+
+    @OneToMany(mappedBy = "followedUser",cascade = CascadeType.REMOVE)
+    private List<Follower> userMembers;
+
+    @OneToMany(mappedBy = "commentAuthor",cascade = CascadeType.REMOVE)
+    private List<Comment> userComments;
 
 
     @ManyToMany(fetch = FetchType.LAZY)

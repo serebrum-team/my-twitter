@@ -63,7 +63,7 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     public boolean deleteComment(Long userId, Long commentId) {
 
-        if (!commentDao.existsByCommentIdAndCommentAuthorId(commentId, userId))
+        if (!commentDao.existsByCommentIdAndCommentAuthor(commentId, userDao.findById(userId).get()))
             return false;
 
         if (!commentDao.existsById(commentId))
@@ -81,10 +81,10 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     public boolean deleteFollowed(Long userId, Long memberId) {
 
-        if (!followerDao.existsByUser_UserIdAndFollowedUserId(userId, memberId))
+        if (!followerDao.existsByUser_UserIdAndFollowedUser(userId, userDao.findById(memberId).get()))
             return true;
-        followerDao.deleteByUser_UserIdAndFollowedUserId(userId, memberId);
-        if (!followerDao.existsByUser_UserIdAndFollowedUserId(userId, memberId))
+        followerDao.deleteByUser_UserIdAndFollowedUser(userId, userDao.findById(memberId).get());
+        if (!followerDao.existsByUser_UserIdAndFollowedUser(userId, userDao.findById(memberId).get()))
             return true;
 
         return false;
@@ -93,10 +93,10 @@ public class DeleteServiceImpl implements DeleteService {
     @Override
     public boolean deleteMember(Long userId, Long memberId) {
 
-        if (!followerDao.existsByUser_UserIdAndFollowedUserId(userId, memberId))
+        if (!followerDao.existsByUser_UserIdAndFollowedUser(userId, userDao.findById(memberId).get()))
             return true;
-        followerDao.deleteByUser_UserIdAndFollowedUserId(userId, memberId);
-        if (!followerDao.existsByUser_UserIdAndFollowedUserId(userId, memberId))
+        followerDao.deleteByUser_UserIdAndFollowedUser(userId, userDao.findById(memberId).get());
+        if (!followerDao.existsByUser_UserIdAndFollowedUser(userId, userDao.findById(memberId).get()))
             return true;
 
         return false;

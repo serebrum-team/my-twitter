@@ -12,9 +12,11 @@ import uz.serebrum.mytwitter.request.model.CommentRequestModel;
 public class CommentConverter {
     @Autowired
     private PostDao postDao;
+    @Autowired
+    private UserDao userDao;
     public Comment convertCommentRequestModelToCommentEntity(CommentRequestModel commentRequestModel){
         Comment comment = new Comment();
-        comment.setCommentAuthorId(commentRequestModel.getCommentAuthorId());
+        comment.setCommentAuthor(userDao.findById(commentRequestModel.getCommentAuthorId()).get());
         comment.setCommentBody(commentRequestModel.getCommentBody());
         comment.setCommentedPost(postDao.findById(commentRequestModel.getCommentedPostId()).get());
         return comment;

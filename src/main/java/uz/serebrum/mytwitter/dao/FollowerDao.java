@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface FollowerDao extends CrudRepository<Follower,Long> {
 
-    boolean existsByUser_UserIdAndFollowedUserId(Long user_userId, Long followedUserId);
+    boolean existsByUser_UserIdAndFollowedUser(Long user_userId, User followedUser);
 
-    void deleteByUser_UserIdAndFollowedUserId(Long user_userId, Long followedUserId);
+    void deleteByUser_UserIdAndFollowedUser(Long user_userId, User followedUser);
 
 
 }

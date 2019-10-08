@@ -25,13 +25,17 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "POST_ID")
     private Post commentedPost;
-    @Column(name = "COMMENT_AUTHOR_ID")
-    private Long commentAuthorId;
 
-    public Comment(String commentBody, Post commentedPost, Long commentAuthorId) {
+
+    @ManyToOne()
+    @JoinColumn(name = "COMMENT_AUTHOR_ID")
+//    @Column(name = "COMMENT_AUTHOR_ID")
+    private User commentAuthor;
+
+    public Comment(String commentBody, Post commentedPost, User commentAuthor) {
         this.commentBody = commentBody;
         this.commentedPost = commentedPost;
-        this.commentAuthorId = commentAuthorId;
+        this.commentAuthor = commentAuthor;
     }
 
     public Comment() {

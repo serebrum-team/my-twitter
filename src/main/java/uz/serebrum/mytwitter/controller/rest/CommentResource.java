@@ -83,7 +83,7 @@ public class CommentResource {
 
 
         ControllerLinkBuilder commentAuthorLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserResource.class).
-                getUserById(comment.getCommentAuthorId().toString()));
+                getUserById(comment.getCommentAuthor().getUserId().toString()));
 
 
         ControllerLinkBuilder commentPostLink = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(PostResource.class)

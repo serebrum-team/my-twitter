@@ -17,6 +17,6 @@ public class FollowerConverter {
     private UserService userService;
 
     public Follower convertFollowerRequestModelToFollowerEntity(FollowerRequestModel followerRequestModel) {
-        return new Follower(userService.getUserById(followerRequestModel.getUserId()), followerRequestModel.getMemberUserId());
+        return new Follower(userService.getUserById(followerRequestModel.getUserId()), userService.getUserById(followerRequestModel.getMemberUserId()));
     }
 }

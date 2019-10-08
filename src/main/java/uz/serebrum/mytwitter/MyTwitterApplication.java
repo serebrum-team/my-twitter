@@ -39,16 +39,16 @@ public class MyTwitterApplication {
 
         FollowerService followerService = context.getBean(FollowerService.class);
 
-        followerService.saveFollower(new Follower(userService.getUserById(1l),2l));
-        followerService.saveFollower(new Follower(userService.getUserById(1l),3l));
-        followerService.saveFollower(new Follower(userService.getUserById(2l),3l));
-        followerService.saveFollower(new Follower(userService.getUserById(4l),3l));
-        followerService.saveFollower(new Follower(userService.getUserById(1l),4l));
-        followerService.saveFollower(new Follower(userService.getUserById(1l),5l));
-        followerService.saveFollower(new Follower(userService.getUserById(2l),4l));
-        followerService.saveFollower(new Follower(userService.getUserById(5l),2l));
-        followerService.saveFollower(new Follower(userService.getUserById(5l),4l));
-        followerService.saveFollower(new Follower(userService.getUserById(4l),2l));
+        followerService.saveFollower(new Follower(userService.getUserById(1l),userService.getUserById(2l)));
+        followerService.saveFollower(new Follower(userService.getUserById(1l),userService.getUserById(3l)));
+        followerService.saveFollower(new Follower(userService.getUserById(2l),userService.getUserById(3l)));
+        followerService.saveFollower(new Follower(userService.getUserById(4l),userService.getUserById(3l)));
+        followerService.saveFollower(new Follower(userService.getUserById(1l),userService.getUserById(4l)));
+        followerService.saveFollower(new Follower(userService.getUserById(1l),userService.getUserById(5l)));
+        followerService.saveFollower(new Follower(userService.getUserById(2l),userService.getUserById(4l)));
+        followerService.saveFollower(new Follower(userService.getUserById(5l),userService.getUserById(2l)));
+        followerService.saveFollower(new Follower(userService.getUserById(5l),userService.getUserById(4l)));
+        followerService.saveFollower(new Follower(userService.getUserById(4l),userService.getUserById(2l)));
 
         PostService postService = context.getBean(PostService.class);
 
@@ -79,20 +79,20 @@ public class MyTwitterApplication {
         viewedService.saveViewed(new Viewed(postService.getPostById(3l),userService.getUserById(2l)));
 
         CommentService commentService = context.getBean(CommentService.class);
-        commentService.saveComment(new Comment("comment body 1",postService.getPostById(1L),1l));
-        commentService.saveComment(new Comment("comment body 2",postService.getPostById(1L),2l));
-        commentService.saveComment(new Comment("comment body 3",postService.getPostById(2L),3l));
-        commentService.saveComment(new Comment("comment body 4",postService.getPostById(2L),4l));
-        commentService.saveComment(new Comment("comment body 5",postService.getPostById(2L),5l));
-        commentService.saveComment(new Comment("comment body 6",postService.getPostById(3L),4l));
-        commentService.saveComment(new Comment("comment body 7",postService.getPostById(3L),2l));
-        commentService.saveComment(new Comment("comment body 8",postService.getPostById(4l),1l));
-        commentService.saveComment(new Comment("comment body 9",postService.getPostById(4l),3l));
-        commentService.saveComment(new Comment("comment body 0",postService.getPostById(4l),4l));
-        commentService.saveComment(new Comment("comment body 10",postService.getPostById(5l),4l));
-        commentService.saveComment(new Comment("comment body 11",postService.getPostById(6l),4l));
-        commentService.saveComment(new Comment("comment body 12",postService.getPostById(7l),4l));
-        commentService.saveComment(new Comment("comment body 13",postService.getPostById(8l),4l));
+        commentService.saveComment(new Comment("comment body 1",postService.getPostById(1L),userService.getUserById(1l)));
+        commentService.saveComment(new Comment("comment body 2",postService.getPostById(1L),userService.getUserById(2l)));
+        commentService.saveComment(new Comment("comment body 3",postService.getPostById(2L),userService.getUserById(3l)));
+        commentService.saveComment(new Comment("comment body 4",postService.getPostById(2L),userService.getUserById(4l)));
+        commentService.saveComment(new Comment("comment body 5",postService.getPostById(2L),userService.getUserById(5l)));
+        commentService.saveComment(new Comment("comment body 6",postService.getPostById(3L),userService.getUserById(4l)));
+        commentService.saveComment(new Comment("comment body 7",postService.getPostById(3L),userService.getUserById(2l)));
+        commentService.saveComment(new Comment("comment body 8",postService.getPostById(4l),userService.getUserById(1l)));
+        commentService.saveComment(new Comment("comment body 9",postService.getPostById(4l),userService.getUserById(3l)));
+        commentService.saveComment(new Comment("comment body 0",postService.getPostById(4l),userService.getUserById(4l)));
+        commentService.saveComment(new Comment("comment body 10",postService.getPostById(5l),userService.getUserById(4l)));
+        commentService.saveComment(new Comment("comment body 11",postService.getPostById(6l),userService.getUserById(4l)));
+        commentService.saveComment(new Comment("comment body 12",postService.getPostById(7l),userService.getUserById(4l)));
+        commentService.saveComment(new Comment("comment body 13",postService.getPostById(8l),userService.getUserById(4l)));
 
 
     }

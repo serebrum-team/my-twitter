@@ -64,7 +64,7 @@ public class UpdateServiceImpl implements UpdateService {
     @Override
     public Comment updateComment(Long userId,Long commentId,CommentRequestModel commentRequestModel) {
 
-        if (!commentDao.existsByCommentIdAndCommentAuthorId(commentId,userId))
+        if (!commentDao.existsByCommentIdAndCommentAuthor(commentId,userDao.findById(userId).get()))
             return null;
 
         Comment comment = commentDao.findById(commentId).get();
