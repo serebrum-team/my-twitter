@@ -71,7 +71,7 @@ public class MyTwitterApplication {
         viewedService.saveViewed(new Viewed(postService.getPostById(2l),userService.getUserById(1l)));
         viewedService.saveViewed(new Viewed(postService.getPostById(2l),userService.getUserById(2l)));
         viewedService.saveViewed(new Viewed(postService.getPostById(3l),userService.getUserById(5l)));
-        viewedService.saveViewed(new Viewed(postService.getPostById(3l),userService.getUserById(3l)));
+        viewedService.saveViewed(new Viewed(postService.getPostById(3L),userService.getUserById(3l)));
         viewedService.saveViewed(new Viewed(postService.getPostById(3l),userService.getUserById(4l)));
         viewedService.saveViewed(new Viewed(postService.getPostById(5l),userService.getUserById(1l)));
         viewedService.saveViewed(new Viewed(postService.getPostById(6l),userService.getUserById(3l)));
