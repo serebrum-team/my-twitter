@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import uz.serebrum.mytwitter.configuration.Constants;
 import uz.serebrum.mytwitter.entity.User;
 import uz.serebrum.mytwitter.exception.UserNotFoundException;
@@ -125,5 +122,11 @@ public class RegisterController {
         emailService.sendSecretCode(modelWithSecretCode.getEmail());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @GetMapping(path = "/register-using-telegram")
+    public ResponseEntity<String> registerUsingTelegram(){
+        return new ResponseEntity<String>("Search from telegram Makhmudov_Bekhruz_bot ",HttpStatus.OK);
+    }
+
 
 }

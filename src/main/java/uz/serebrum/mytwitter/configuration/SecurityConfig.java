@@ -15,35 +15,35 @@ import uz.serebrum.mytwitter.service.UserService;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@Bean
-	public JWTAutFilter jwtAuthenticationFilter() {
-		return new JWTAutFilter();
-	}
+    @Bean
+    public JWTAutFilter jwtAuthenticationFilter() {
+        return new JWTAutFilter();
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-		.authorizeRequests()
-		.antMatchers("/api/v1/token","/api/v1/register","/v2/api-docs","/api/v1/send-email-address",
-				"/configuration/ui",
-				"/swagger-resources/**",
-				"/configuration/security",
-				"/swagger-ui.html",
-				"/webjars/**")
-		.permitAll()
-		.anyRequest()
-		.authenticated()
-		.and()
-		.csrf().disable()
-		.addFilterBefore(jwtAuthenticationFilter(), 
-				UsernamePasswordAuthenticationFilter.class);
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests()
+                .antMatchers("/api/v1/token", "/api/v1/register", "/v2/api-docs", "/api/v1/send-email-address", "/api/v1/register-using-telegram",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf().disable()
+                .addFilterBefore(jwtAuthenticationFilter(),
+                        UsernamePasswordAuthenticationFilter.class);
+    }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userService);
-	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userService);
+    }
 }

@@ -5,21 +5,26 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.telegram.telegrambots.ApiContextInitializer;
+import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.serebrum.mytwitter.entity.*;
 import uz.serebrum.mytwitter.entity.embeddable.OtherPostDetails;
 import uz.serebrum.mytwitter.entity.embeddable.OtherUserDetails;
 import uz.serebrum.mytwitter.service.*;
+import uz.serebrum.mytwitter.telegram.TelegramController;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication  
 public class MyTwitterApplication {
     private static Logger logger = LoggerFactory.getLogger(MyTwitterApplication.class);
 
 
     public static void main(String[] args) {
+        ApiContextInitializer.init();
         ConfigurableApplicationContext context = SpringApplication.run(MyTwitterApplication.class, args);
         UserService userService = context.getBean(UserService.class);
 
@@ -93,6 +98,7 @@ public class MyTwitterApplication {
         commentService.saveComment(new Comment("comment body 11",postService.getPostById(6l),userService.getUserById(4l)));
         commentService.saveComment(new Comment("comment body 12",postService.getPostById(7l),userService.getUserById(4l)));
         commentService.saveComment(new Comment("comment body 13",postService.getPostById(8l),userService.getUserById(4l)));
+
 
 
     }
