@@ -123,10 +123,4 @@ public class RegisterController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(path = "/register-using-telegram")
-    public ResponseEntity<String> registerUsingTelegram(){
-        return new ResponseEntity<String>("Search from telegram Makhmudov_Bekhruz_bot ",HttpStatus.OK);
-    }
-
-
 }

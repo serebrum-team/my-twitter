@@ -5,14 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.telegram.telegrambots.ApiContextInitializer;
-import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import uz.serebrum.mytwitter.entity.*;
 import uz.serebrum.mytwitter.entity.embeddable.OtherPostDetails;
 import uz.serebrum.mytwitter.entity.embeddable.OtherUserDetails;
 import uz.serebrum.mytwitter.service.*;
-import uz.serebrum.mytwitter.telegram.TelegramController;
 
 
 import java.util.ArrayList;
@@ -24,7 +20,7 @@ public class MyTwitterApplication {
 
 
     public static void main(String[] args) {
-        ApiContextInitializer.init();
+
         ConfigurableApplicationContext context = SpringApplication.run(MyTwitterApplication.class, args);
         UserService userService = context.getBean(UserService.class);
 
