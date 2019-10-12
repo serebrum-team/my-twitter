@@ -40,7 +40,7 @@ public class MyTwitterApplication {
 
         FollowerService followerService = context.getBean(FollowerService.class);
 
-        followerService.saveFollower(new Follower(userService.getUserById(1l),userService.getUserById(2l)));
+        followerService.saveFollower(new Follower(userService.getUserById(1L),userService.getUserById(2l)));
         followerService.saveFollower(new Follower(userService.getUserById(1l),userService.getUserById(3l)));
         followerService.saveFollower(new Follower(userService.getUserById(2l),userService.getUserById(3l)));
         followerService.saveFollower(new Follower(userService.getUserById(4l),userService.getUserById(3l)));
